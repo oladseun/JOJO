@@ -29,6 +29,7 @@ def greet_user():
 listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
+# for male or female voices
 engine.setProperty('voice',voices[0].id)
 engine.setProperty('rate',170)
 
@@ -56,8 +57,9 @@ def take_command():
             command = listener.recognize_google(voice)
             #making all commands lowercase
             command = command.lower()
-            if 'alexa' in command:
-                command = command.replace('alexa', '')
+            if 'jojo' in command:
+                #Removing the word 'jojo' from the command
+                command = command.replace('jojo', '')
                 print(command)
     except:
         pass
@@ -67,6 +69,8 @@ def run_alexa():
     greet_user()
     global command
     command = take_command()
+    
+    
     # directing to youtube 
     if 'play' in command:
         print(command)
@@ -80,6 +84,7 @@ def run_alexa():
         print (time)
         talk('The time is ' + time)
         
+    # to take a screenshoot
     elif 'screenshot' in command:
         print (command)
         talk('wait a second')
@@ -131,7 +136,7 @@ def run_alexa():
         print(command)
         talk('I was made by Oluwaseun')
     
-    elif 'end' in command :
+    elif 'end' in command or 'bye' in command :
         print(command)
         talk('Bye Oluwaseun, Hoping we talk soon')
         exit()
