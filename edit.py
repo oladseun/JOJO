@@ -7,7 +7,6 @@ import wikipedia
 import os
 import json, requests
 import subprocess as sp
-#import randfacts
 import webbrowser
 import pyautogui
 
@@ -62,13 +61,12 @@ def take_command():
                 command = command.replace('jojo', '')
                 print(command)
     except:
-        pass
-    return command
+        return None
 
 def run_alexa():
     greet_user()
-    global command
     command = take_command()
+    if command is not None:
     
     
     # directing to youtube 
@@ -90,6 +88,20 @@ def run_alexa():
         talk('wait a second')
         screenshot = pyautogui.screenshot()
         screenshot.save("c:/Users/HP/Pictures/Screenshots/image.png")
+        
+    elif 'open command prompt' in command or 'open cmd' in command:
+        open_cmd()
+        
+    elif 'ip address' in command:
+        ip_address = find_my_ip()
+        talk(f'Your IP Address is {ip_address}.\n For your convenience, I am printing it on the screen sir.')
+        print(f'Your IP Address is {ip_address}')
+    
+    #command for news_headlines
+    elif 'news' in command:
+        talk(f"I'm reading out the latest news headlines, sir")
+        talk(get_latest_news())
+        print(*get_latest_news(), sep='\n')
     
     #command for the who statement    
     elif 'who is' in command :
@@ -104,26 +116,43 @@ def run_alexa():
         talk('wait a second')
         webbrowser.open(command)
         
-    #command for facts
-    #elif 'fact' in command:
-        #print (command)
-        #x = randfacts.getfact()
-        #talk('Do you know that' + x) 
 
     #command for weather
-    elif 'weather' in command:
-        print (command)
-        talk('The temperaure in Lagos is' + str(temperaure())) + 'degree celsius' + 'and with' + str(description())
-        
+    elif 'weather' in query:
+        ip_address = find_my_ip()
+        city = requests.get(f"https://ipapi.co/{ip_address}/city/").text
+        talk(f"Getting weather report for your city {city}")
+        weather, temperature, feels_like = get_weather_report(city)
+        talk(f"The current temperature is {temperature}, but it feels like {feels_like}")
+        talk(f"Also, the weather report talks about {weather}")
+        talk("For your convenience, I am printing it on the screen sir.")
+        print(f"Description: {weather}\nTemperature: {temperature}\nFeels like: {feels_like}")
+    
     # to open camera on your device (Main Function)
     elif 'open camera' in command:
         print (command)
         talk('wait a second')
         sp.run('start microsoft.windows.camera:', shell=True)
+        
+
+    elif "send an email" in query:
+        speak("On what email address do I send sir? Please enter in the console: ")
+        receiver_address = input("Enter email address: ")
+        speak("What should be the subject sir?")
+        subject = take_user_input().lower()
+        speak("What is the message sir?")
+        message = take_user_input().lower()
+        if send_email(receiver_address, subject, message):
+            speak("I've sent the email sir.")
+        else:
+            speak("Something went wrong while I was sending the mail. Please check the error logs sir.")
+    
+    elif 'command prompt' in command:    
+        os.system('start cmd')
     
     elif 'soccer' in command or 'notion'in command:
         print (command)
-        talk('wait a second')
+        talk('wait a second please....')
         os.startfile(paths[command])
         
     # questioning my VA
@@ -159,8 +188,8 @@ def run_alexa():
     else:
         print('Repeat command, please.')
         talk('Repeat command, please.')
-    
         
-        
+            
+            
 while True:
     run_alexa()
