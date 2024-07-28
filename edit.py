@@ -17,7 +17,7 @@ BOTNAME = 'JOJO'
 def greet_user():
     hour = datetime.datetime.now().hour
     if (hour >= 6) and (hour < 12):
-        talk(f"Good Morning {USERNAME}")
+        talk(f"Goood Morning {USERNAME}")
     elif (hour >= 12) and (hour < 16):
         talk(f"Good afternoon {USERNAME}")
     elif (hour >= 16) and (hour < 19):
